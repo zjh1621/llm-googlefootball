@@ -2,7 +2,8 @@ import numpy as np
 import gfootball.env as football_env
 
 class PlayerObservationWrapper:
-    def __init__(self, observation):
+    def __init__(self, observation, wrapper):
+        self.wrapper = wrapper
         self.observation = observation
 
         # Ball information
@@ -59,7 +60,7 @@ class PlayerObservationWrapper:
 
 class ObservationWrapper:
     def __init__(self, observations):
-        self.player_observations = [PlayerObservationWrapper(obs) for obs in observations]
+        self.player_observations = [PlayerObservationWrapper(obs, self) for obs in observations]
 
 
 class ActionWrapper:
