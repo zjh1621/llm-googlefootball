@@ -1,23 +1,30 @@
 # 
 # strategies/advanced_strategy.py
-from .player_roles_6_11 import *
-import gfootball.env as football_env # 假设你需要访问角色常量
+from .player_roles_6_13 import player_role_to_action
+from wrappers import ObservationWrapper
 
-def advanced_strategy(obs_wrapper):
+# Action constant for fallback
+ACTION_IDLE = 0
+
+def advanced_strategy(obs_wrapper: ObservationWrapper):
+    """
+    Main strategy function that assigns an action to each of the 11 controlled players.
+    """
     actions = []
-    # obs_wrapper.player_observations 是一个列表，包含每个球员的 PlayerObservationWrapper 实例
-    for player_obs in obs_wrapper.player_observations:
-        # 获取当前控制球员的角色 ID
-        role = player_obs.player_role
+    
+    # obs_wrapper.player_observations contains an observation for each of our 11 players
+    for obs in obs_wrapper.player_observations:
+        player_role = obs.player_role
         
-        # 从 player_role_to_action 字典中获取对应的动作函数
-        action_function = player_role_to_action.get(role)
+        # Look up the appropriate action function based on the player's role
+        action_function = player_role_to_action.get(player_role)
         
-        # 如果找到了对应的函数，则调用它来获取动作；否则，使用默认动作
         if action_function:
-            action = action_function(player_obs)
+            # Call the role-specific function to get an action
+            action = action_function(obs)
+            actions.append(action)
         else:
-            action = ACTION_IDLE  # 如果角色未在字典中定义，则执行默认的"空闲"动作
-
-        actions.append(action)
+            # If the role is somehow not found, default to doing nothing
+            actions.append(ACTION_IDLE)
+            
     return actions

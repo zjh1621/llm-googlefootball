@@ -29,7 +29,7 @@ if __name__ == '__main__':
     football_logger.setLevel(logging.WARNING)
     # Run the main function in parallel using ProcessPoolExecutor
     with ProcessPoolExecutor() as executor:
-        futures = [executor.submit(run_match) for _ in range(10)]
+        futures = [executor.submit(run_match) for _ in range(1)]
         for future in futures:
             left_reward, right_reward = future.result()
             print(f"left_reward:{left_reward}, right_reward:{right_reward}")
